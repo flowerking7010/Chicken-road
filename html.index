@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Chicken Road Bot Prediction</title>
+  <style>
+    body { font-family: Arial; margin: 40px; }
+    label, select, input { display: block; margin: 10px 0; }
+    button { margin-top: 20px; }
+  </style>
+</head>
+<body>
+  <h1>Chicken Road Bot Prediction</h1>
+
+  <form id="predictionForm">
+    <label>Number of Chickens:
+      <input type="number" name="chickens" min="1" required />
+    </label>
+
+    <label>Road Length (meters):
+      <input type="number" name="roadLength" min="1" required />
+    </label>
+
+    <label>Traffic Frequency:
+      <select name="trafficFrequency">
+        <option>Low</option>
+        <option>Medium</option>
+        <option>High</option>
+      </select>
+    </label>
+
+    <label>Vehicle Speed (km/h):
+      <input type="number" name="vehicleSpeed" min="1" required />
+    </label>
+
+    <label>Weather:
+      <select name="weather">
+        <option>Clear</option>
+        <option>Rainy</option>
+        <option>Foggy</option>
+      </select>
+    </label>
+
+    <label>Time of Day:
+      <select name="timeOfDay">
+        <option>Day</option>
+        <option>Night</option>
+      </select>
+    </label>
+
+    <button type="submit">Predict</button>
+  </form>
+
+  <div id="result"></div>
+
+  <script>
+    document.getElementById('predictionForm').addEventListener('submit', async function(e) {
+      e.preventDefault();
+      const formData = new FormData(e.target);
+      const data = Object.fromEntries(formData.entries());
+
+      const res = await fetch('/predict', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data)
+      });
+
+      const result = await res.json();
+      document.getElementById('result').innerHTML =
+        `<h3>Prediction: ${result.prediction}</h3><p>Reasoning: ${result.reasoning}</p>`;
+    });
+  </script>
+</body>
+</html>
